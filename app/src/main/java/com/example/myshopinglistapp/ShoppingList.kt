@@ -1,7 +1,9 @@
 package com.example.myshopinglistapp
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,7 @@ data class ShoppingItem(val id:Int,
                         var quantity:Int,
                         var isEditing:Boolean = false)
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ShoppingList() {
 
@@ -60,10 +63,28 @@ fun ShoppingList() {
     }
 
     if(showDialog)
-    AlertDialog(onDismissRequest = { showDialog = false }, confirmButton = { /*TODO*/ },
+    AlertDialog(onDismissRequest = { showDialog = false },
+        confirmButton = { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Button(onClick = { if(itemName.isNotBlank()){
+                val newItem = ShoppingItem(id = sItems.size+1, name = itemName, quantity = itemQuantity.toInt())
+                sItems = sItems + newItem
+                showDialog = false
+                itemName = ""
+            } }) {
+                Text("Add")
+            }
+            Button(onClick = { showDialog = false }) {
+                Text("Cancel")
+            }
+        }},
         title = { Text("Add Shopping Item")},
         text = { Column {
-            OutlinedTextField(value = itemName, onValueChange = {itemName = it}, singleLine = true, modifier = Modifier.fillMaxWidth().padding(8.dp))
-            OutlinedTextField(value = itemQuantity, onValueChange = {itemQuantity = it},singleLine = true, modifier = Modifier.fillMaxWidth().padding(8.dp))
-        } })
+            OutlinedTextField(value = itemName, onValueChange = {itemName = it}, singleLine = true, modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp))
+            OutlinedTextField(value = itemQuantity, onValueChange = {itemQuantity = it},singleLine = true, modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp))
+        } }
+    )
 }
